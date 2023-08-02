@@ -1,4 +1,4 @@
-package hellojpa;
+package jpql;
 
 import javax.persistence.*;
 
