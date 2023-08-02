@@ -1,7 +1,9 @@
-package hellojpa;
+package jpql;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public class JpaMain {
 
@@ -13,27 +15,28 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
+            Team team = new Team();
+            team.setName("team");
+            em.persist(team);
 
-            for (int i = 0; i < 100; i++) {
-                Member member = new Member();
-                member.setUsername("member"+i);
-                member.setAge(i);
-                em.persist(member);
-            }
+            Member member = new Member();
+            member.setUsername("member");
+            member.setAge(10);
+            member.setTeam(team);
+
+            em.persist(member);
 
 
             em.flush();
             em.clear();
 
-            List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
-                    .setFirstResult(0)
-                    .setMaxResults(10)
+            String query = "select t.members from Team t ";
+            Collection resultList = em.createQuery(query, Collection.class)
                     .getResultList();
-
-            System.out.println("result.size() = " + result.size());
-            for (Member member1 : result) {
-                System.out.println("member1 = " + member1);
+            for (Object s : resultList) {
+                System.out.println("s = " + s);
             }
+
 
             tx.commit();
         } catch (Exception e) {
